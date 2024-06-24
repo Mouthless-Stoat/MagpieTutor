@@ -291,7 +291,9 @@ const SetFormatList = {
             extra: {
                 type: "extra",
                 name: "== EXTRA INFO ==",
-                info: [{ text: "**Token**: {token}", type: "sub" }],
+                info: [{ text: "**Token**: {token}", type: "sub" },
+                    { text: "\nThis card's format is: {format}", type: "sub"},
+                ],
             },
         },
     },
@@ -324,6 +326,7 @@ const SetFormatList = {
                     { text: "\n**Sigils**: {sigils}", type: "list" },
                     { text: "\n**Traits**: {traits}", type: "list" },
                     { text: "\n**Token**: {token}", type: "sub" },
+                    { text: "\nThis card's format is: {format}", type: "sub"},
                 ],
             },
         },
@@ -531,10 +534,17 @@ const SetList = {
         type: "specialLoad",
         format: SetFormatList.augmented,
         compactFormat: SetFormatList.augmentedCompact,
-        file: "./extra/stoatLordCardStuff.js",
-        pools: ImfPool,
+        file: "./extra/CustomTCGInscryptionProcesser.js",
+        pools: [
+            { name: "common", condition: 'card.tier == "Common"' },
+            { name: "uncommon", condition: 'card.tier == "Uncommon"' },
+            { name: "rare", condition: 'card.tier == "Rare"' },
+            { name: "talk", condition: 'card.tier == "Talking"' },
+            { name: "side", condition: 'card.tier == "Side Deck"' },
+            { name: "joke", condition: `card.tier == "Common (Joke Card)"` },
+            { name: "banned", condition: `card.temple == "Terrain/Extras"` }
+        ],
     },
-
     //file set
     bas: {
         name: "base",
