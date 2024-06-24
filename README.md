@@ -31,11 +31,12 @@ If you don't know how to setup a discord bot follow these step:
 2. Go to the [Discord Developer Portal](https://discord.com/developers/applications)
 3. Click on `New Application` in the top right. Give the Application a name (This is not the name of your bot but it recommend to make it the same or similar name as your bot), accept the TOS and create it.
 4. Click on the `Bot` menu and choose `Add Bot`, you can change the name of the bot if you want here.
-5. Click the `Copy` button below `Token`.
-6. Click on the `OAuth2` menu and choose `URL Generator` choose `bot` and `application.commands` option.
-7. In the `Bot Permission` section and choose `Administrator`(If you want a more specific list of permission go to). Now you can click `Copy` at the very bottom to get the bot.invite link. **You must invite the bot to a server for future steps**.
-8. Now download this repository, unzip the folder if it a zip file.
-9. Make a `config.json` file, in there type the following: 
+5. Scroll down a bit and enable all `Privileged Gateway Intents`.
+6. Click the `Copy` button below `Token`.
+7. Click on the `OAuth2` menu and choose `URL Generator` choose `bot` and `application.commands` option.
+8. In the `Bot Permission` section and choose `Administrator`(If you want a more specific list of permission go to). Now you can click `Copy` at the very bottom to get the bot.invite link. **You must invite the bot to a server for future steps**.
+9. Now download this repository, unzip the folder if it a zip file.
+10. Make a `config.json` file, in there type the following: 
 ```json
 {
     "clientId": "Your Client ID here",
