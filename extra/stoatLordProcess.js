@@ -37,7 +37,6 @@ async function load() {
         cardFormated.health = card["Health"]
         cardFormated.description = card["Flavor"]
         cardFormated.format = card["From"]
-        cardFormated.wikipage = card["Wiki-Page"]
         cardFormated.token = card["Token"]
 
         // Cost Parsing

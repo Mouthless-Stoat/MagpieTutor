@@ -93,7 +93,7 @@ const portraitCaches = require("./extra/caches.json")
 format.extend(String.prototype, {})
 
 const searchRegex = /([^\s]*?)(\w{3})?\[{2}([^\]]+)\]{2}/g
-const queryRegex = /(-|)(\w+):([^"\s]+|"[^"]+")/g
+const queryRegex = /(-|)(\w+):\s?([^"\s]+|"[^"]+")/g
 
 const matchPercentage = 0.4
 let scream = false
@@ -874,8 +874,11 @@ const queryKeywordList = {
                         (info.bone_cost ? info.bone_cost : 0) +
                         (info.energy_cost ? info.energy_cost : 0) +
                         (info.mox_cost || info.mox
-                            ? info[set.name == "augmeted" ? "mox" : "mox_cost"]
-                                  .length
+                            ? info[
+                                  set.name == "augmeted" || set.name == "stuff"
+                                      ? "mox"
+                                      : "mox_cost"
+                              ].length
                             : 0) +
                         (info.shattered ? info.shattered.length : 0)
                     }${op}${value}`,
@@ -1635,7 +1638,7 @@ function fetchCard(name, setName, noAlter = false, noArt = false) {
     }
 
     // change existing card info and custom url
-    if (setName != "augmented") {
+    if (setName != "augmented" || setName != "stuff") {
         if (card.name == "Fox") {
             card.url =
                 "https://cdn.discordapp.com/attachments/1038091526800162826/1069256708783882300/Screenshot_2023-01-30_at_00.31.53.png"
