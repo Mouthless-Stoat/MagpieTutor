@@ -1,7 +1,7 @@
 const fetch = require("node-fetch")
 
-var CustomTCGInscryption = {
-    ruleset: "Custom TCG Inscryption",
+var outJson = {
+    ruleset: "Stoat Lord Stuff",
     cards: [],
     sigils: {},
 }
@@ -9,18 +9,22 @@ var CustomTCGInscryption = {
 async function load() {
     let cardsRaw
     let sigilRaw
-    await fetch("https://opensheet.elk.sh/152SuTx1fVc4zsqL4_zVDPx69sd9vYWikc2Ce9Y5vhJE/1")
-        .then((res) => res.json())
-        .then((json) => {
+    await fetch(
+        "https://opensheet.elk.sh/152SuTx1fVc4zsqL4_zVDPx69sd9vYWikc2Ce9Y5vhJE/1",
+    )
+        .then(res => res.json())
+        .then(json => {
             cardsRaw = json
         })
 
-    await fetch("https://opensheet.elk.sh/152SuTx1fVc4zsqL4_zVDPx69sd9vYWikc2Ce9Y5vhJE/2")
-        .then((res) => res.json())
-        .then((json) => {
+    await fetch(
+        "https://opensheet.elk.sh/152SuTx1fVc4zsqL4_zVDPx69sd9vYWikc2Ce9Y5vhJE/2",
+    )
+        .then(res => res.json())
+        .then(json => {
             sigilRaw = json
         })
-        
+
     cardsRaw.pop()
     for (let card of cardsRaw) {
         let cardFormated = {}
@@ -37,7 +41,11 @@ async function load() {
         cardFormated.token = card["Token"]
 
         // Cost Parsing
-        card["Cost"] = card["Cost"].replace("Bones", "Bone").replace("Gems", "Mox").replace("Gem", "Mox").toLowerCase()
+        card["Cost"] = card["Cost"]
+            .replace("Bones", "Bone")
+            .replace("Gems", "Mox")
+            .replace("Gem", "Mox")
+            .toLowerCase()
         for (let cost of card["Cost"].split(", ")) {
             cost = cost.trim().toLowerCase()
             let temp = cost.split(" ")
@@ -46,7 +54,11 @@ async function load() {
                 for (let i = 0; i < temp[0]; i++) {
                     cardFormated["shattered"].push(`shattered_${temp[2]}`)
                 }
-            } else if (["sapphire", "ruby", "emerald", "prism"].some((i) => cost.includes(i))) {
+            } else if (
+                ["sapphire", "ruby", "emerald", "prism"].some(i =>
+                    cost.includes(i),
+                )
+            ) {
                 if (!cardFormated["mox"]) cardFormated["mox"] = []
                 for (let i = 0; i < temp[0]; i++) {
                     cardFormated["mox"].push(temp[1])
@@ -56,25 +68,32 @@ async function load() {
             } else if (temp.length > 0) {
                 cardFormated[temp[1]] = parseInt(temp[0])
             }
-        
 
-        cardFormated.sigils = [
-            card["Sigil 1"] ?? "",
-            card["Sigil 2"] ?? "",
-            card["Sigil 3"] ?? "",
-            card["Sigil 4"] ?? "",
-        ]
-        cardFormated.sigils = cardFormated.sigils.filter((s) => s !== "")
+            cardFormated.sigils = [
+                card["Sigil 1"] ?? "",
+                card["Sigil 2"] ?? "",
+                card["Sigil 3"] ?? "",
+                card["Sigil 4"] ?? "",
+            ]
+            cardFormated.sigils = cardFormated.sigils.filter(s => s !== "")
 
-        cardFormated.pixport_url = card["Image"]
-        CustomTCGInscryption.cards.push(cardFormated)
+            if (cardFormated.sigils.length <= 0) {
+                delete cardFormated["sigils"]
+            }
+
+            cardFormated.pixport_url = card["Image"]
+            outJson.cards.push(cardFormated)
+        }
+
+        for (sigil of sigilRaw) {
+            if (sigil["Description"])
+                outJson.sigils[sigil["Name"]] = sigil["Description"].replaceAll(
+                    "\n",
+                    "",
+                )
+        }
     }
-
-    for (sigil of sigilRaw) {
-        if (sigil["Description"]) CustomTCGInscryption.sigils[sigil["Name"]] = sigil["Description"].replaceAll("\n", "")
-    }
-}
-return CustomTCGInscryption
+    return outJson
 }
 
 module.exports = {
