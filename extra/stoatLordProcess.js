@@ -36,7 +36,6 @@ async function load() {
         cardFormated.attack = card["Power"]
         cardFormated.health = card["Health"]
         cardFormated.description = card["Flavor"]
-        cardFormated.format = card["From"]
         cardFormated.token = card["Token"]
 
         // Cost Parsing
@@ -67,30 +66,31 @@ async function load() {
             } else if (temp.length > 0) {
                 cardFormated[temp[1]] = parseInt(temp[0])
             }
+        }
 
-            cardFormated.sigils = [
-                card["Sigil 1"] ?? "",
-                card["Sigil 2"] ?? "",
-                card["Sigil 3"] ?? "",
-                card["Sigil 4"] ?? "",
-            ]
-            cardFormated.sigils = cardFormated.sigils.filter(s => s !== "")
+        if (card["Sigil 1"] !== "") {
+            cardFormated.sigils = []
 
-            if (cardFormated.sigils.length <= 0) {
-                delete cardFormated["sigils"]
+            if (card["Sigil 2"] !== "") {
+                cardFormated.sigils.push(card["Sigil 2"])
             }
-
-            cardFormated.pixport_url = card["Image"]
-            outJson.cards.push(cardFormated)
+            if (card["Sigil 3"] !== "") {
+                cardFormated.sigils.push(card["Sigil 3"])
+            }
+            if (card["Sigil 4"] !== "") {
+                cardFormated.sigils.push(card["Sigil 4"])
+            }
         }
 
-        for (sigil of sigilRaw) {
-            if (sigil["Description"])
-                outJson.sigils[sigil["Name"]] = sigil["Description"].replaceAll(
-                    "\n",
-                    "",
-                )
-        }
+        cardFormated.pixport_url = card["Image"]
+        outJson.cards.push(cardFormated)
+    }
+    for (sigil of sigilRaw) {
+        if (sigil["Description"])
+            outJson.sigils[sigil["Name"]] = sigil["Description"].replaceAll(
+                "\n",
+                "",
+            )
     }
     return outJson
 }
