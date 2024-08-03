@@ -9,15 +9,19 @@ var imfJson = {
 async function load() {
     let cardsRaw
     let sigilRaw
-    await fetch(`https://opensheet.elk.sh/1tvTXSsFDK5xAVALQPdDPJOitBufJE6UB_MN4q5nbLXk/Cards`)
-        .then((res) => res.json())
-        .then((json) => {
+    await fetch(
+        `https://opensheet.elk.sh/1tvTXSsFDK5xAVALQPdDPJOitBufJE6UB_MN4q5nbLXk/Cards`,
+    )
+        .then(res => res.json())
+        .then(json => {
             cardsRaw = json
         })
 
-    await fetch(`https://opensheet.elk.sh/1tvTXSsFDK5xAVALQPdDPJOitBufJE6UB_MN4q5nbLXk/Sigils`)
-        .then((res) => res.json())
-        .then((json) => {
+    await fetch(
+        `https://opensheet.elk.sh/1tvTXSsFDK5xAVALQPdDPJOitBufJE6UB_MN4q5nbLXk/Sigils`,
+    )
+        .then(res => res.json())
+        .then(json => {
             sigilRaw = json
         })
     cardsRaw.pop()
@@ -42,7 +46,11 @@ async function load() {
                 for (let i = 0; i < temp[0]; i++) {
                     cardFormated["shattered"].push(`shattered_${temp[2]}`)
                 }
-            } else if (["sapphire", "ruby", "emerald", "prism"].some((i) => cost.includes(i))) {
+            } else if (
+                ["sapphire", "ruby", "emerald", "prism"].some(i =>
+                    cost.includes(i),
+                )
+            ) {
                 if (!cardFormated["mox"]) cardFormated["mox"] = []
                 for (let i = 0; i < temp[0]; i++) {
                     cardFormated["mox"].push(temp[1])
@@ -55,15 +63,21 @@ async function load() {
         // parsing health and power
         cardFormated["health"] = parseInt(card["♥"])
         cardFormated["attack"] = parseInt(card["🗡"] == "X" ? 0 : card["🗡"])
-        cardFormated["sigils"] = card["Sigils"] ? card["Sigils"].split(", ") : []
+        cardFormated["sigils"] = card["Sigils"]
+            ? card["Sigils"].split(", ")
+            : []
 
         if (card["Token"]) cardFormated["token"] = card["Token"]
-        if (card["Traits"]) cardFormated["traits"] = card["Traits"] ? card["Traits"].split(", ") : []
+        if (card["Traits"])
+            cardFormated["traits"] = card["Traits"]
+                ? card["Traits"].split(", ")
+                : []
         if (card["Tribes"]) cardFormated["tribes"] = card["Tribes"]
 
         cardFormated["description"] = card["Flavor Text"]
 
-        cardFormated["footnote"] = `This card art was made by ${card["Credit"]}.\nLast Edited: ${card["edited"]}`
+        cardFormated["footnote"] =
+            `This card art was made by ${card["Credit"]}.\nLast Edited: ${card["edited"]}`
         // console.log(cardFormated["sigils"], !cardFormated["sigils"])
         if (!cardFormated["sigils"] || cardFormated["sigils"].length <= 0) {
             delete cardFormated["sigils"]
@@ -73,18 +87,18 @@ async function load() {
             cardFormated["noArt"] = true
         }
 
-        cardFormated[
-            "pixport_url"
-        ] = `https://github.com/answearingmachine/card-printer/raw/main/dist/printer/assets/art/${cardFormated.name.replaceAll(
-            " ",
-            "%20"
-        )}.png`
+        cardFormated["pixport_url"] =
+            `https://github.com/answearingmachine/card-printer/raw/main/dist/printer/assets/art/${cardFormated.name.replaceAll(
+                " ",
+                "%20",
+            )}.png`
 
         imfJson.cards.push(cardFormated)
     }
 
     for (sigil of sigilRaw) {
-        if (sigil["Text"]) imfJson.sigils[sigil["Name"]] = sigil["Text"].replaceAll("\n", "")
+        if (sigil["Text"])
+            imfJson.sigils[sigil["Name"]] = sigil["Text"].replaceAll("\n", "")
     }
 
     imfJson.cards.push({

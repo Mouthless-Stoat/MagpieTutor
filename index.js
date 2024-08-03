@@ -146,7 +146,7 @@ const SetFormatList = {
             {
                 text: ":unhammerable:",
                 type: "con",
-                condition: "card.unhammerable",
+                condition: "card.nohammer",
             },
             { text: ":banned:", type: "con", condition: "card.banned" },
         ],
@@ -198,11 +198,11 @@ const SetFormatList = {
             { text: "{name}", type: "sub" },
             { text: " ({set})", type: "set" },
             { text: ":conductive:", type: "con", condition: "card.conduit" },
-            { text: ":unsacable:", type: "con", condition: "card.unsacable" },
+            { text: ":unsacable:", type: "con", condition: "card.nosac" },
             {
                 text: ":unhammerable:",
                 type: "con",
-                condition: "card.unhammerable",
+                condition: "card.nohammer",
             },
             { text: ":banned:", type: "con", condition: "card.banned" },
         ],
@@ -366,11 +366,11 @@ const SetFormatList = {
             { text: "({set})", type: "set" },
             { text: ":conductive:", type: "con", condition: "card.conduit" },
             { text: ":rare:", type: "con", condition: "card.rare" },
-            { text: ":unsacable:", type: "con", condition: "card.unsacable" },
+            { text: ":unsacable:", type: "con", condition: "card.nosac" },
             {
                 text: ":unhammerable:",
                 type: "con",
-                condition: "card.unhammerable",
+                condition: "card.nosac",
             },
             { text: ":banned:", type: "con", condition: "card.banned" },
         ],
@@ -1162,6 +1162,7 @@ const queryKeywordList = {
                     !info.bone_cost &&
                     !info.energy_cost &&
                     !info.mox_cost,
+                hard: ([_, info]) => info.nohammer,
             }
             let callback = nicknameList[value]
             filterPossibleValue(callback ? callback : _ => false)
@@ -3221,6 +3222,15 @@ client.on(Events.InteractionCreate, async interaction => {
 // on messages send
 client.on(Events.MessageCreate, async message => {
     if (message.author.id === clientId) return
+    if (message.content.toLowerCase().includes("what is link")) {
+        message.reply({
+            content:
+                "Whenever a card is played to your field, including by any sigil, you gain 1 link. Links are lost when you play cards which cost them and also at the ends of your turns.",
+            allowedMentions: {
+                repliedUser: false,
+            },
+        })
+    }
     if (message.content.toLowerCase().startsWith("would you kindly")) {
         try {
             const command = message.content.slice(17)
